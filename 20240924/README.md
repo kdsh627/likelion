@@ -1,175 +1,479 @@
-# 2024-09-23 유니티 학습
+# 2024-09-24 유니티 학습
 
 **##아는 문법은 생략##**
 
-## 1. C# 기초 문법
+## **1. C# 기초 문법**
 
-- **간단한 자료형 (int, int?, float, long, bool, string 등)**
-
-```csharp
-  int? n = null; //널러블 타입
-```
-
-- **간단한 연산자 ( ??, ||, &&, &, | 등)**
+- **List (컬렉션)**
 
 ```csharp
- Debug.Log(s1 ?? s2); //s1이 NULL이면 s2를, 반대면 s1을 반환한다.
-```
+using System.Collections.Generic;
 
-- **조건 제어문**
+List<string> names = new List<string>(10); //선언
 
-```csharp
-foreach(int i in arr)
+names.Add("Teeno");
+names.Add("Ari");
+names.Add("스웨인");
+names.Add("제드");
+
+names.Remove("제드"); //데이터로 제거
+names.RemoveAt(1); //인덱스로 제거
+
+names.Insert(0, "그라가스"); //원하는 인덱스에 삽입
+
+Debug.Log(names.IndexOf("Ari")); //없으면 -1, 있으면 인덱스가 출력
+Debug.Log(names.Count); //컬렉션에서는 Length가 아닌 Count를 사용
+
+//해당 데이터가 존재하는가 반환
+if (names.Contains("스웨인"))
 {
-    Debug.Log(i);
+    Debug.Log("있다");
+}
+
+//모든 값 출력
+foreach (string name in names)
+{
+    Debug.Log(name);
 }
 ```
 
-- **배열, 다차원 배열, 가변 배열**
+- **Dictionary (컬렉션)**
 
 ```csharp
- //배열 선언
- int[] arr = new int[5];
- int[] arr = {1, 2, 3, 4, 5};
- 
- //다차원 배열 선언
- int[,] arr = new int[2, 2];
- int[,] arr = {{1, 2}, {1, 2}};
- Debug.Log(arr[0, 0]);
- 
- //가변 배열 선언
- int[][] arr = new int[4][]; //각 배열의 크기가 다를 수 있다는 뜻
- arr[0] = new int[2];
- arr[1] = new int[3];
- arr[2] = new int[4];
- arr[3] = new int[5]; //각각 다시 초기화 시켜줘야함
- Debug.Log(arr[0][0]);
+using System.Collections.Generic;
+
+//선언
+Dictionary<string, string> cities = new Dictionary<string, string>();
+
+cities.Add("한국", "서울");
+cities.Add("쿠바", "하바나");
+cities["한국"] = "부산"; //인덱스로 접근 시 대체되지만 Add로는 중복 불가
+
+Debug.Log(cities.Count); //컬렉션은 Length대신 Count
+
+//해당 키가 존재하는가
+if (!cities.ContainsKey("한국"))
+{
+    Debug.Log("있다");
+}
+
+//꺼내는 방식
+foreach (string key in cities.Keys)
+{
+    Debug.Log(cities[key]);
+}
+
+//꺼내는 방식2
+foreach (KeyValuePair<string, string> pair in cities)
+{
+    Debug.Log(pair.Key + " : " + pair.Value);
+}
+```
+
+- **함수**
+
+```csharp
+//함수
+void Like()
+{
+    Debug.Log("좋아요 눌러주세요");
+}
+
+//인자는 왼쪽부터 받아오므로 디폴트 값은 오른쪽부터 채워야한다.
+//명시해주던 말던 오른쪽부터 안채우면 오류가 난다.
+float Area(float width, float height = 10)
+{
+    return width * height;
+}
+
+//ref를 통해 매개변수를 복사가 아닌 참조로 넘길 수 있음
+//꼭 값을 바꿀 필요는 없음
+float AreaRef(ref float width, float height)
+{
+    width = 15f;
+    return width * height;
+}
+
+//ref와 다른 점은 여러 리턴 값을 받을 때 사용한다는 점
+//그리고 초기화를 안해줘도 됨
+//대신 out은 꼭 값을 바꿔줘야한다. 값을 돌려받기 위해 사용하는 것이기 때문(리턴의 개념)
+void AreaOut(float width, float height, out float around)
+{
+    around = width * height;
+}
+
+void Start()
+{
+    float x = 10f;
+    float y = 20f;
+    float area = Area(x, y);
+    float area2 = Area(height: y, width: x); //C#에서는 인자와 매개변수를 명시할 수 있다.
+
+    //ref를 명시해주면 x는 바꿀 수 있음
+    //ref는 초기화가 된 변수를 넘겨줘야 함
+    float area3 = AreaRef(ref x, y);
+
+    float around;
+    //out은 초기화가 안되어도 넘길 수 있음
+    AreaOut(x, y, out around);
+
+
+    Debug.Log(area);
+
+    Like();
+}
+```
+
+- **구조체**
+
+```csharp
+struct HumanData
+{
+    public string name;
+    public float weight;
+    public float height;
+    public float footSize;
+
+    public HumanData(string name, float weight, float height, float footsize)
+    {
+        this.name = name;
+        this.weight = weight;
+        this.height = height;
+        this.footSize = height;
+    }
+}
+
+void Start()
+{
+    HumanData[] humanDatas = new HumanData[5];
+
+    HumanData charles = new HumanData("철수", 100f, 180f, 280f);
+    charles.name = "철수";
+    charles.weight = 100f;
+    charles.height = 180f;
+    charles.footSize = 280f;
+
+}
+```
+
+- **클래스**
+
+```csharp
+public class Character
+{
+    //멤버변수
+    public string Name;
+    public int Hp;
+
+    //생성자
+    public Character(string name, int hp)
+    {
+        Name = name;
+        Hp = hp;
+    }
+
+
+    //메소드
+    public void Hit(int damage)
+    {
+        Hp -= damage;
+    }
+
+    public void Heal(int heal)
+    {
+        Hp += heal;
+    }
+
+    public bool isAlive()
+    {
+        return Hp > 0;
+    }
+
+    public void Eat(Food food)
+    {
+        if(isAlive())
+        {
+            Hp += food.Hp;
+        }
+    }
+}
+```
+
+```csharp
+public class Food
+{
+    public string Name;
+    public int Hp;
+}
+```
+
+```csharp
+public class Wizard : Character
+{
+    public int Mp;
+    
+    public Wizard(string name, int hp, int mp) : base(name, hp)//부모의 생성자를 가져다 쓴다는 뜻
+    {
+        Mp = mp;
+    }
+
+    public void UseMagic()
+    {
+        if(Mp >= 5)
+        {
+            Mp -= 5;
+            Debug.Log("마법 뿅뿅");
+        }
+    }
+}
+```
+```csharp
+void Start()
+{
+    Character character = new Character("철수", 10);
+    Food food1 = new Food();
+    food1.Name = "Protein";
+    food1.Hp = 10;
+
+    character.Hit(5);
+    character.Heal(3);
+    character.Eat(food1);
+
+    Debug.Log(character.isAlive());
+
+
+    Wizard wizard = new Wizard("영희", 10, 10);
+    wizard.UseMagic();
+    wizard.Hit(3);
+    wizard.Heal(3);
+    wizard.Hit(20);
+    Debug.Log(wizard.isAlive());
+
+
+    Character tmp = wizard as Character; //Wizard 클래스가 Character의 일종이기에 이게 가능함
+                                         //하지만 Wizard관련 함수는 못씀
+
+    Debug.Log(tmp); //캐릭터에 집어넣어도 위저드라고 출력된다.
+
+    ((Wizard)tmp).UseMagic(); //캐릭터 클래스지만 위자드로 타입캐스팅을 하여 관련 함수를 
+                              //사용할 수 있게 한 모습
+
+    Character char1 = new Character("누구", 10);
+
+    ((Wizard)char1).UseMagic(); //코드 상으로는 에러가 없지만 실행 시 에러가 난다
+                                //타입 캐스팅이 실패하기 때문
+                                //유니티에서는 에러 발생 시 함수 실행을 중단하고 리턴한다.
+
+    Debug.Log(char1 is Wizard); //캐스팅이 가능하면 true, 불가능하면 false를 리턴한다.
+    Wizard wizard2 = char1 as Wizard; //좀 더 안전하게 캐스팅하는 방법
+                                      //캐스팅 실패 시 NULL이 들어간다.
+
+    //포함관계를 잘 보자.
+    //상속관계에서 자식은 부모가 될 수 있지만 반대는 불가능하다.
+    //고등어는 생선이라고 부를 수 있지만 생선은 고등어라고 부를 수 없다는 것
+}
 ```
 
 ## 2. C# 기초 문법 응용 문제
 
-![image](https://github.com/user-attachments/assets/45a424db-b9ec-4a7d-8ea0-781700eed245)
-
-
-```csharp
-//problem 1
-int a = 1;
-int b = 2;
-
-for (int i = 0; i < 10; i++)
-{
-    Debug.Log(a);
-    a *= b;
-}
-```
-
-![image](https://github.com/user-attachments/assets/7b7b8b6e-ec50-4224-aec8-6fa791bfe4c1)
-
+![image](https://github.com/user-attachments/assets/eff03174-f31a-4a5f-a88c-50fbb553c95a)
 
 ```csharp
-using System;
-//problem 3
-int[] arr = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-Array.Reverse(arr);
+int[][] arr = new int[4][];
+arr[0] = new int[4] { 10, 15, 3, 2 };
+arr[1] = new int[3] { 1, 3, 2 };
+arr[2] = new int[2] { 5, 20 };
+arr[3] = new int[1] { 36 };
 
-foreach(int i in arr)
+List<int> list = new List<int>();
+for (int i = 0; i < arr.GetLength(0); i++)
 {
-    Debug.Log(i);
-}
-```
-
-![image](https://github.com/user-attachments/assets/61e30c32-7b14-446e-9808-b1e9cd6b31a7)
-
-
-```csharp
-//problem 4
-bool[, ] isBig = new bool[5, 5];
-for (int i = 0; i < isBig.GetLength(0); i++)
-{
-    for (int j = 0; j < isBig.GetLength(1); j++)
+    foreach (int n in arr[i])
     {
-        isBig[i, j] = i > j;
-        Debug.Log(isBig[i, j]);
-    }
-}
-```
-
-![image](https://github.com/user-attachments/assets/8bd22a39-1452-4ae4-af9d-718800cfb36c)
-
-
-```csharp
-//problem 8
-int[, ] arrA = { { 1, 2 }, { 3, 4 } };
-int[, ] arrB = { { 1, 2 }, { 3, 4 } };
-
-int[, ] arrC = new int[2, 2];
-int[, ] arrD = new int[2, 2];
-
-for (int i = 0; i < arrC.GetLength(0); i++)
-{
-    for (int j = 0; j < arrC.GetLength(1); j++)
-    {
-        arrC[i, j] = arrA[i, j] + arrB[i, j];
-        Debug.Log(arrC[i, j]);
-    }
-}
-
-for (int i = 0; i < arrC.GetLength(0); i++)
-{
-    for (int j = 0; j < arrC.GetLength(1); j++)
-    {
-        for (int k = 0; k < arrC.GetLength(1); k++)
+        if (n > 10)
         {
-            arrD[i, j] += arrA[i, k] * arrB[k, j];
+            list.Add(n);
+            Debug.Log(n);
         }
-        Debug.Log(arrC[i, j]);
     }
 }
 ```
 
-![image](https://github.com/user-attachments/assets/f4bb5310-9372-4c3d-8020-a0ff21d883ee)
+![image](https://github.com/user-attachments/assets/e012180b-548b-49cc-abf8-70b6236ecc7f)
 
 
 ```csharp
-//problem 9
-int[, ] arrE = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-int[, ] arrF = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+List<int> list = new List<int>();
 
-int[, ] arrG = new int[3, 3];
-int[, ] arrH = new int[3, 3];
-
-for (int i = 0; i < arrG.GetLength(0); i++)
+int i = 1;
+int result = 0;
+while (true)
 {
-    for (int j = 0; j < arrG.GetLength(1); j++)
-    {
-        arrG[i, j] = arrE[i, j] + arrF[i, j];
-        Debug.Log(arrG[i, j]);
-    }
-}
+    string s = Convert.ToString(i, 2);
+    string tmp = "";
 
-for (int i = 0; i < arrH.GetLength(0); i++)
-{
-    for (int j = 0; j < arrH.GetLength(1); j++)
+    foreach (char c in s)
     {
-        for (int k = 0; k < arrH.GetLength(1); k++)
+        if (c == '0')
         {
-            arrH[i, j] += arrE[i, k] * arrF[k, j];
+            tmp += c;
         }
-        Debug.Log(arrH[i, j]);
+        else
+        {
+            tmp += '5';
+        }
     }
+
+    result = Int32.Parse(tmp);
+    if (result > 1000) break;
+    Debug.Log(result);
+    list.Add(result);
+
+    i++;
+}
 }
 ```
 
-![image](https://github.com/user-attachments/assets/0265c127-ce1d-4b0f-9585-e753213d3821)
+![image](https://github.com/user-attachments/assets/db03e4f2-97a5-4ee0-a2fd-8830f0d99c1a)
 
 
 ```csharp
-using System;
-//problem 10
-int[] arrSort = { 4, 5, 1, 2, 6, 3 };
-Array.Sort(arrSort);
-foreach (int i in arrSort)
+Dictionary<string, int> monster = new Dictionary<string, int>();
+monster.Add("슬라임", 5);
+monster.Add("오크", 13);
+monster.Add("고블린", 8);
+
+float experAve = 0;
+foreach (KeyValuePair<string, int> pair in monster)
 {
-    Debug.Log(i);
+    experAve += pair.Value;
+}
+
+Debug.Log(experAve / monster.Count);
+```
+
+![image](https://github.com/user-attachments/assets/0bc8ccee-5337-49e0-9315-0243149fb8ba)
+
+
+```csharp
+Dictionary<string, string> KoEn = new Dictionary<string, string>();
+KoEn.Add("사과", "apple");
+KoEn.Add("바나나", "banana");
+KoEn.Add("오렌지", "Orange");
+KoEn.Add("마우스", "mouse");
+KoEn.Add("구멍", "hole");
+
+Dictionary<string, string> EnKo = new Dictionary<string, string>();
+foreach (KeyValuePair<string, string> pair in KoEn)
+{
+    EnKo.Add(pair.Value, pair.Key);
+    Debug.Log(pair.Value + " : " + pair.Key);
+}
+```
+
+![image](https://github.com/user-attachments/assets/bbe42acb-e3aa-4d28-97d8-e78df068a707)
+
+
+```csharp
+struct Character
+{
+    public string name;
+    public int attack;
+
+    public Character(string name, int attack)
+    {
+        this.name = name;
+        this.attack = attack;
+    }
+}
+void Start()
+{
+    List<Character> list = new List<Character>();
+    list.Add(new Character("민수", 12));
+    list.Add(new Character("철수", 15));
+
+    int count = 0;
+    float attackAve = 0;
+    foreach (Character c in list)
+    {
+        if (c.name.Contains("수"))
+        {
+            attackAve += c.attack;
+            count++;
+        }
+    }
+
+    Debug.Log(attackAve / count);
+}
+```
+
+![image](https://github.com/user-attachments/assets/c9582892-f754-4c35-ade2-9dfd2dd18a22)
+
+
+```csharp
+public class StackClass
+{
+    Stack<int> stack;
+    
+    public StackClass() 
+    { 
+        stack = new Stack<int>();
+    }
+
+    public void Add(int data)
+    {
+        stack.Push(data);
+    }
+
+    public int Pop()
+    {
+        return stack.Pop();
+    }
+}
+void Start()
+{
+    StackClass stackClass = new StackClass();
+    stackClass.Add(0);
+    stackClass.Add(1);
+    stackClass.Add(21);
+
+    Debug.Log(stackClass.Pop());
+    Debug.Log(stackClass.Pop());
+}
+```
+
+![image](https://github.com/user-attachments/assets/69edc406-553c-4eab-9ec2-bf2fc1d1e235)
+
+
+```csharp
+public class QueueClass
+{
+    Queue<int> queue;
+
+    public QueueClass()
+    {
+        queue = new Queue<int>();
+    }
+
+    public void Push(int data)
+    {
+        queue.Enqueue(data);
+    }
+
+    public int Pop() 
+    { 
+        return queue.Dequeue();
+    }
+}
+void Start()
+{
+    QueueClass queueClass = new QueueClass();
+    queueClass.Push(9);
+    queueClass.Push(7);
+    queueClass.Push(5);
+    queueClass.Push(1);
+
+    Debug.Log(queueClass.Pop());
+    Debug.Log(queueClass.Pop());
 }
 ```
