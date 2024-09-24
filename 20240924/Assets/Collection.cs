@@ -14,7 +14,7 @@ public class Collection : MonoBehaviour
         names.Add("스웨인");
         names.Add("제드");
 
-        names.Remove("제드");
+        names.Remove("제드"); //데이터로 제거
         names.RemoveAt(1); //인덱스로 제거
 
         names.Insert(0, "그라가스"); //원하는 인덱스에 삽입
