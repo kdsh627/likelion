@@ -279,47 +279,201 @@ void Start()
 ![image](https://github.com/user-attachments/assets/eff03174-f31a-4a5f-a88c-50fbb553c95a)
 
 ```csharp
+int[][] arr = new int[4][];
+arr[0] = new int[4] { 10, 15, 3, 2 };
+arr[1] = new int[3] { 1, 3, 2 };
+arr[2] = new int[2] { 5, 20 };
+arr[3] = new int[1] { 36 };
 
+List<int> list = new List<int>();
+for (int i = 0; i < arr.GetLength(0); i++)
+{
+    foreach (int n in arr[i])
+    {
+        if (n > 10)
+        {
+            list.Add(n);
+            Debug.Log(n);
+        }
+    }
+}
 ```
 
 ![image](https://github.com/user-attachments/assets/e012180b-548b-49cc-abf8-70b6236ecc7f)
 
 
 ```csharp
+List<int> list = new List<int>();
 
+int i = 1;
+int result = 0;
+while (true)
+{
+    string s = Convert.ToString(i, 2);
+    string tmp = "";
+
+    foreach (char c in s)
+    {
+        if (c == '0')
+        {
+            tmp += c;
+        }
+        else
+        {
+            tmp += '5';
+        }
+    }
+
+    result = Int32.Parse(tmp);
+    if (result > 1000) break;
+    Debug.Log(result);
+    list.Add(result);
+
+    i++;
+}
+}
 ```
 
 ![image](https://github.com/user-attachments/assets/db03e4f2-97a5-4ee0-a2fd-8830f0d99c1a)
 
 
 ```csharp
+Dictionary<string, int> monster = new Dictionary<string, int>();
+monster.Add("슬라임", 5);
+monster.Add("오크", 13);
+monster.Add("고블린", 8);
 
+float experAve = 0;
+foreach (KeyValuePair<string, int> pair in monster)
+{
+    experAve += pair.Value;
+}
+
+Debug.Log(experAve / monster.Count);
 ```
 
 ![image](https://github.com/user-attachments/assets/0bc8ccee-5337-49e0-9315-0243149fb8ba)
 
 
 ```csharp
+Dictionary<string, string> KoEn = new Dictionary<string, string>();
+KoEn.Add("사과", "apple");
+KoEn.Add("바나나", "banana");
+KoEn.Add("오렌지", "Orange");
+KoEn.Add("마우스", "mouse");
+KoEn.Add("구멍", "hole");
 
+Dictionary<string, string> EnKo = new Dictionary<string, string>();
+foreach (KeyValuePair<string, string> pair in KoEn)
+{
+    EnKo.Add(pair.Value, pair.Key);
+    Debug.Log(pair.Value + " : " + pair.Key);
+}
 ```
 
 ![image](https://github.com/user-attachments/assets/bbe42acb-e3aa-4d28-97d8-e78df068a707)
 
 
 ```csharp
+struct Character
+{
+    public string name;
+    public int attack;
 
+    public Character(string name, int attack)
+    {
+        this.name = name;
+        this.attack = attack;
+    }
+}
+void Start()
+{
+    List<Character> list = new List<Character>();
+    list.Add(new Character("민수", 12));
+    list.Add(new Character("철수", 15));
+
+    int count = 0;
+    float attackAve = 0;
+    foreach (Character c in list)
+    {
+        if (c.name.Contains("수"))
+        {
+            attackAve += c.attack;
+            count++;
+        }
+    }
+
+    Debug.Log(attackAve / count);
+}
 ```
 
 ![image](https://github.com/user-attachments/assets/c9582892-f754-4c35-ade2-9dfd2dd18a22)
 
 
 ```csharp
+public class StackClass
+{
+    Stack<int> stack;
+    
+    public StackClass() 
+    { 
+        stack = new Stack<int>();
+    }
 
+    public void Add(int data)
+    {
+        stack.Push(data);
+    }
+
+    public int Pop()
+    {
+        return stack.Pop();
+    }
+}
+void Start()
+{
+    StackClass stackClass = new StackClass();
+    stackClass.Add(0);
+    stackClass.Add(1);
+    stackClass.Add(21);
+
+    Debug.Log(stackClass.Pop());
+    Debug.Log(stackClass.Pop());
+}
 ```
 
 ![image](https://github.com/user-attachments/assets/69edc406-553c-4eab-9ec2-bf2fc1d1e235)
 
 
 ```csharp
+public class QueueClass
+{
+    Queue<int> queue;
 
+    public QueueClass()
+    {
+        queue = new Queue<int>();
+    }
+
+    public void Push(int data)
+    {
+        queue.Enqueue(data);
+    }
+
+    public int Pop() 
+    { 
+        return queue.Dequeue();
+    }
+}
+void Start()
+{
+    QueueClass queueClass = new QueueClass();
+    queueClass.Push(9);
+    queueClass.Push(7);
+    queueClass.Push(5);
+    queueClass.Push(1);
+
+    Debug.Log(queueClass.Pop());
+    Debug.Log(queueClass.Pop());
+}
 ```
