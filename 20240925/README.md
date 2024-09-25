@@ -232,13 +232,120 @@ void Start()
 
 
 ```csharp
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
+public class Problem1 : MonoBehaviour
+{
+    enum MOD
+    {
+        RemoveSpace,
+        DistinAlpha,
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
+        string str1 = "  abca  ";
+
+        string str2 = new string(str1.Reverse().ToArray());
+
+        MOD mod = MOD.RemoveSpace;
+
+        switch (mod)
+        { 
+            case MOD.RemoveSpace:
+                str1.Trim();
+                str2.Trim();
+                break;
+            case MOD.DistinAlpha:
+                str1.ToUpper();
+                str2.ToUpper();
+                break;
+        }
+
+
+        if (str1 == str2)
+        {
+            Debug.Log("팰린드롬 이에용");
+        }
+        else
+        {
+            Debug.Log("이게 뭐에용");
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+    }
+}
 ```
 
 ![image](https://github.com/user-attachments/assets/0ffb9136-9b8d-4f9b-9e4a-b5509707acb8)
 
 
 ```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public abstract class Shape
+{
+    public abstract float Area();
+}
+
+public class Circle : Shape
+{
+    private int radius;
+
+    public Circle(int radius)
+    {
+        this.radius = radius;
+    }
+
+    public override float Area()
+    {
+        return radius * radius * 3.14f;
+    }
+}
+
+public class Rectangle : Shape
+{
+    private int width;
+    private int height;
+
+    public Rectangle(int width, int height)
+    {
+        this.width = width;
+        this.height = height;
+    }
+
+    public override float Area()
+    {
+        return width * height;
+    }
+}
+
+public class Problem2 : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        Circle circle = new Circle(10);
+        Rectangle rectangle = new Rectangle(5, 4);
+
+        Debug.Log(circle.Area());
+        Debug.Log(rectangle.Area());
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
 
 ```
 
@@ -246,6 +353,68 @@ void Start()
 
 
 ```csharp
+using System.Collections;
+using System.Collections.Generic;
+using System.Data.SqlTypes;
+using UnityEngine;
+
+public class Employee
+{
+    private string name;
+
+    public Employee(string name)
+    {
+        this.name = name;
+    }
+
+    public virtual int Money()
+    {
+        return 100;
+    }
+}
+public class FullTime : Employee
+{
+    public FullTime(string name) : base(name) { }
+
+    public override int Money()
+    {
+        return base.Money();
+    }
+}
+
+public class PartTime : Employee
+{
+    int time;
+    public PartTime(string name, int time) : base(name)
+    {
+        this.time = time;
+    }
+
+    public override int Money()
+    {
+        return time * 10;
+    }
+}
+
+
+public class Problem3 : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        FullTime minsoo = new FullTime("민수");
+        PartTime somin = new PartTime("소민", 20);
+
+        Debug.Log(minsoo.Money());
+        Debug.Log(somin.Money());
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
 
 ```
 
@@ -253,5 +422,83 @@ void Start()
 
 
 ```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Book
+{
+    public string author;
+    public string name;
+
+    public Book(string author, string name)
+    { 
+        this.author = author;
+        this.name = name;
+    }
+}
+
+public class Librarian
+{
+    struct BookInfo
+    {
+        public Book book;
+        public bool isRent;
+
+        public BookInfo(Book book, bool isRent)
+        {
+            this.book = book;
+            this.isRent = isRent;
+        }
+    }
+
+    private List<BookInfo> books;
+
+    public Librarian()
+    {
+        books = new List<BookInfo> ();
+    }
+
+    public void AddBook(Book book)
+    {
+        books.Add(new BookInfo(book, false));
+    }
+
+    public void FindBook(string author)
+    {
+        foreach(BookInfo bookInfo in books)
+        {
+            if(!bookInfo.isRent)//안 빌렸으면
+            {
+                Book book = bookInfo.book;
+                if(book.author == author)
+                {
+                    Debug.Log("저자 : " + book.author + " 제목 : " + book.name);
+                }
+            }
+        }
+    }
+}
+
+
+public class Problem4 : MonoBehaviour
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        Librarian librarian = new Librarian();
+        librarian.AddBook(new Book("가", "집가고싶다"));
+        librarian.AddBook(new Book("나", "집가기싫다"));
+        librarian.AddBook(new Book("가", "응애응애"));
+
+        librarian.FindBook("가");
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
 
 ```
