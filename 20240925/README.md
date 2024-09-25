@@ -1,479 +1,257 @@
-# 2024-09-24 유니티 학습
+# 2024-09-25 유니티 학습
 
 **##아는 문법은 생략##**
 
-## **1. C# 기초 문법**
+## 1. C# 기초 문법
 
-- **List (컬렉션)**
-
-```csharp
-using System.Collections.Generic;
-
-List<string> names = new List<string>(10); //선언
-
-names.Add("Teeno");
-names.Add("Ari");
-names.Add("스웨인");
-names.Add("제드");
-
-names.Remove("제드"); //데이터로 제거
-names.RemoveAt(1); //인덱스로 제거
-
-names.Insert(0, "그라가스"); //원하는 인덱스에 삽입
-
-Debug.Log(names.IndexOf("Ari")); //없으면 -1, 있으면 인덱스가 출력
-Debug.Log(names.Count); //컬렉션에서는 Length가 아닌 Count를 사용
-
-//해당 데이터가 존재하는가 반환
-if (names.Contains("스웨인"))
-{
-    Debug.Log("있다");
-}
-
-//모든 값 출력
-foreach (string name in names)
-{
-    Debug.Log(name);
-}
-```
-
-- **Dictionary (컬렉션)**
+- **문자열**
 
 ```csharp
-using System.Collections.Generic;
+string str1 = "   dddd     ";
 
-//선언
-Dictionary<string, string> cities = new Dictionary<string, string>();
+Debug.Log(str1.Trim()); //앞 뒤 공백 제거
 
-cities.Add("한국", "서울");
-cities.Add("쿠바", "하바나");
-cities["한국"] = "부산"; //인덱스로 접근 시 대체되지만 Add로는 중복 불가
+string str2 = "ABA";
 
-Debug.Log(cities.Count); //컬렉션은 Length대신 Count
-
-//해당 키가 존재하는가
-if (!cities.ContainsKey("한국"))
-{
-    Debug.Log("있다");
-}
-
-//꺼내는 방식
-foreach (string key in cities.Keys)
-{
-    Debug.Log(cities[key]);
-}
-
-//꺼내는 방식2
-foreach (KeyValuePair<string, string> pair in cities)
-{
-    Debug.Log(pair.Key + " : " + pair.Value);
-}
+Debug.Log(str2.Replace("A", "B")); //문자열 대체
 ```
 
-- **함수**
-
-```csharp
-//함수
-void Like()
-{
-    Debug.Log("좋아요 눌러주세요");
-}
-
-//인자는 왼쪽부터 받아오므로 디폴트 값은 오른쪽부터 채워야한다.
-//명시해주던 말던 오른쪽부터 안채우면 오류가 난다.
-float Area(float width, float height = 10)
-{
-    return width * height;
-}
-
-//ref를 통해 매개변수를 복사가 아닌 참조로 넘길 수 있음
-//꼭 값을 바꿀 필요는 없음
-float AreaRef(ref float width, float height)
-{
-    width = 15f;
-    return width * height;
-}
-
-//ref와 다른 점은 여러 리턴 값을 받을 때 사용한다는 점
-//그리고 초기화를 안해줘도 됨
-//대신 out은 꼭 값을 바꿔줘야한다. 값을 돌려받기 위해 사용하는 것이기 때문(리턴의 개념)
-void AreaOut(float width, float height, out float around)
-{
-    around = width * height;
-}
-
-void Start()
-{
-    float x = 10f;
-    float y = 20f;
-    float area = Area(x, y);
-    float area2 = Area(height: y, width: x); //C#에서는 인자와 매개변수를 명시할 수 있다.
-
-    //ref를 명시해주면 x는 바꿀 수 있음
-    //ref는 초기화가 된 변수를 넘겨줘야 함
-    float area3 = AreaRef(ref x, y);
-
-    float around;
-    //out은 초기화가 안되어도 넘길 수 있음
-    AreaOut(x, y, out around);
-
-
-    Debug.Log(area);
-
-    Like();
-}
-```
-
-- **구조체**
-
-```csharp
-struct HumanData
-{
-    public string name;
-    public float weight;
-    public float height;
-    public float footSize;
-
-    public HumanData(string name, float weight, float height, float footsize)
-    {
-        this.name = name;
-        this.weight = weight;
-        this.height = height;
-        this.footSize = height;
-    }
-}
-
-void Start()
-{
-    HumanData[] humanDatas = new HumanData[5];
-
-    HumanData charles = new HumanData("철수", 100f, 180f, 280f);
-    charles.name = "철수";
-    charles.weight = 100f;
-    charles.height = 180f;
-    charles.footSize = 280f;
-
-}
-```
-
-- **클래스**
+- **오버라이딩**
 
 ```csharp
 public class Character
 {
-    //멤버변수
-    public string Name;
     public int Hp;
-
-    //생성자
     public Character(string name, int hp)
     {
         Name = name;
         Hp = hp;
     }
-
-
-    //메소드
-    public void Hit(int damage)
+    //오버라이드(덮어쓰기)를 위해서 virtual 키워드를 써준다
+    public virtual void Hit(int damage)
     {
         Hp -= damage;
     }
-
-    public void Heal(int heal)
-    {
-        Hp += heal;
-    }
-
-    public bool isAlive()
-    {
-        return Hp > 0;
-    }
-
-    public void Eat(Food food)
-    {
-        if(isAlive())
-        {
-            Hp += food.Hp;
-        }
-    }
 }
-```
 
-```csharp
-public class Food
-{
-    public string Name;
-    public int Hp;
-}
-```
-
-```csharp
 public class Wizard : Character
 {
     public int Mp;
-    
-    public Wizard(string name, int hp, int mp) : base(name, hp)//부모의 생성자를 가져다 쓴다는 뜻
+    public Wizard(string name, int hp, int mp) : base(name, hp)
     {
         Mp = mp;
     }
-
-    public void UseMagic()
+    public override void Hit(int damage) //오버라이드
     {
-        if(Mp >= 5)
-        {
-            Mp -= 5;
-            Debug.Log("마법 뿅뿅");
-        }
+        //base.Hit(damage); <-이건 부모함수도 실행함
+
+        //이러면 클래스에 따라서 부르는 함수가 다름
+        Debug.Log("물리 면역 입니다");
     }
+    //virtual을 쓰지않아도 new키워드를 override대신 사용하여 비슷한 효과를 낼 수 있다.
+    //new는 기존에 있던 것을 지우고 새롭게 함수를 정의한다는 뜻
 }
-```
-```csharp
+
 void Start()
 {
-    Character character = new Character("철수", 10);
-    Food food1 = new Food();
-    food1.Name = "Protein";
-    food1.Hp = 10;
+    Wizard wiz = new Wizard("법사", 10, 5);
+    wiz.Hit(5); //오버라이드된 함수 실행
 
-    character.Hit(5);
-    character.Heal(3);
-    character.Eat(food1);
+    Character minsoo = wiz as Character;
+    minsoo.Hit(5);//이래도 오버라이드된 함수 실행 
+                  //하지만 new를 사용시 그냥 Character클래스 함수 사용
+                  //new는 타입을 보고 virtual은 본질을 본다
+}
+```
 
-    Debug.Log(character.isAlive());
+- **오버로딩**
 
+```csharp
+public class Character
+{
+    public string Name;
+    protected int Hp; //상속관계에 있는 객체만 사용가능
+    
+    public Character()
+    {
 
-    Wizard wizard = new Wizard("영희", 10, 10);
-    wizard.UseMagic();
-    wizard.Hit(3);
-    wizard.Heal(3);
-    wizard.Hit(20);
-    Debug.Log(wizard.isAlive());
+    }
 
+    public Character(string name, int hp)
+    {
+        Name = name;
+        Hp = hp;
+        N = 5;
+    }
+    //오버로드는 인자의 타입, 개수에 따라서 같은 함수명으로 사용가능하다
+    public void Hit(int damage, int n)
+    {
+        Hp -= (damage*n);
+    }
+		//위의 함수와 함수명은 같지만 인자의 개수가 다른 경우
+    public void Hit(int damage)
+    {
+        Hp -= damage);
+    }
+}
 
-    Character tmp = wizard as Character; //Wizard 클래스가 Character의 일종이기에 이게 가능함
-                                         //하지만 Wizard관련 함수는 못씀
+```
 
-    Debug.Log(tmp); //캐릭터에 집어넣어도 위저드라고 출력된다.
+- **추상클래스**
 
-    ((Wizard)tmp).UseMagic(); //캐릭터 클래스지만 위자드로 타입캐스팅을 하여 관련 함수를 
-                              //사용할 수 있게 한 모습
+```csharp
+public abstract class Animal
+{
+    //추상클래스 : 큰 틀을 만들고 세부내용을 자식들이 구현하는 경우 사용한다
+    //인스턴스화는 불가능
 
-    Character char1 = new Character("누구", 10);
+    public abstract void Fly(); //이름만 있는 추상 메소드
 
-    ((Wizard)char1).UseMagic(); //코드 상으로는 에러가 없지만 실행 시 에러가 난다
-                                //타입 캐스팅이 실패하기 때문
-                                //유니티에서는 에러 발생 시 함수 실행을 중단하고 리턴한다.
+    public void introduce()
+    {
+        Debug.Log("안녕하세요 짐승입니다");
+    }
+}
 
-    Debug.Log(char1 is Wizard); //캐스팅이 가능하면 true, 불가능하면 false를 리턴한다.
-    Wizard wizard2 = char1 as Wizard; //좀 더 안전하게 캐스팅하는 방법
-                                      //캐스팅 실패 시 NULL이 들어간다.
+public class Bird : Animal
+{
+    public override void Fly()
+    {
+        Debug.Log("퍼덕퍼덕");
+    }
+}
 
-    //포함관계를 잘 보자.
-    //상속관계에서 자식은 부모가 될 수 있지만 반대는 불가능하다.
-    //고등어는 생선이라고 부를 수 있지만 생선은 고등어라고 부를 수 없다는 것
+public class Bug : Animal
+{
+    public override void Fly()
+    {
+        Debug.Log("위잉위잉");
+    }
+}
+
+```
+
+- **인터페이스**
+
+```csharp
+//인터페이스는 어떠한 메소드가 있기로 했다는 약속
+public interface ITurnOnable
+{
+    //인터페이스는 멤버 변수, 메소드 구현 안해도됨
+    public void TurnOn();
+    public void TurnOff();
+}
+
+public class TV : ITurnOnable //인터페이스 상속 시 약속한 메소드를 반드시 구현해야함
+{
+    public void TurnOff()
+    {
+        Debug.Log("리모컨 버튼끄기");
+    }
+
+    public void TurnOn()
+    {
+        Debug.Log("리모컨 버튼켜기");
+    }
+}
+
+public class Car : ITurnOnable
+{
+    public void TurnOff()
+    {
+        Debug.Log("차 키를 넣어");
+    }
+
+    public void TurnOn()
+    {
+        Debug.Log("차 키를 돌려");
+    }
+}
+
+void Start()
+{
+    //C#에서는 다중 상속이 불가능 하지만, 인터페이스는 다중으로 받을 수 있음
+    Car car = new Car();
+    car.TurnOn();//Car클래스의 TurnOn 실행
+
+    ITurnOnable anObject = car;
+
+    anObject.TurnOff();//Car클래스의 TurnOff 실행
+}
+```
+
+- **static**
+
+```csharp
+public class Character
+{
+    //static의 경우 모든 CHaracter객체가 공유하는 값이다.
+    //인스턴스 함수에서는 접근가능하다.
+    static int num = 0;
+
+    public string Name;
+    protected int Hp; //상속관계에 있는 객체만 사용가능
+    private int N;
+
+    //static함수 및 변수는 객체 생성전에도 호출 가능하다.
+    public static void abc()
+    {
+        num++;
+        //Name = "응애"; <- static함수에서는 멤버변수를 부를 수 없다.
+    }
+}
+
+```
+
+- **getter, setter**
+
+```csharp
+public class Character
+{
+    private int Hp;
+
+    public int HP
+    { 
+        get { return HP; } 
+        set { Hp = value; }
+    }
+}
+
+void Start()
+{
+    Character charles = new Character("철수", 10);
+
+    charles.HP = 10; //setter
+    Debug.Log(charles.HP); //getter
 }
 ```
 
 ## 2. C# 기초 문법 응용 문제
 
-![image](https://github.com/user-attachments/assets/eff03174-f31a-4a5f-a88c-50fbb553c95a)
+![image](https://github.com/user-attachments/assets/d9403398-87f7-4797-8af9-c5d85ba80d97)
+
 
 ```csharp
-int[][] arr = new int[4][];
-arr[0] = new int[4] { 10, 15, 3, 2 };
-arr[1] = new int[3] { 1, 3, 2 };
-arr[2] = new int[2] { 5, 20 };
-arr[3] = new int[1] { 36 };
 
-List<int> list = new List<int>();
-for (int i = 0; i < arr.GetLength(0); i++)
-{
-    foreach (int n in arr[i])
-    {
-        if (n > 10)
-        {
-            list.Add(n);
-            Debug.Log(n);
-        }
-    }
-}
 ```
 
-![image](https://github.com/user-attachments/assets/e012180b-548b-49cc-abf8-70b6236ecc7f)
+![image](https://github.com/user-attachments/assets/0ffb9136-9b8d-4f9b-9e4a-b5509707acb8)
 
 
 ```csharp
-List<int> list = new List<int>();
 
-int i = 1;
-int result = 0;
-while (true)
-{
-    string s = Convert.ToString(i, 2);
-    string tmp = "";
-
-    foreach (char c in s)
-    {
-        if (c == '0')
-        {
-            tmp += c;
-        }
-        else
-        {
-            tmp += '5';
-        }
-    }
-
-    result = Int32.Parse(tmp);
-    if (result > 1000) break;
-    Debug.Log(result);
-    list.Add(result);
-
-    i++;
-}
-}
 ```
 
-![image](https://github.com/user-attachments/assets/db03e4f2-97a5-4ee0-a2fd-8830f0d99c1a)
+![image](https://github.com/user-attachments/assets/a15cd7eb-4a98-4e96-8079-57bd46373354)
 
 
 ```csharp
-Dictionary<string, int> monster = new Dictionary<string, int>();
-monster.Add("슬라임", 5);
-monster.Add("오크", 13);
-monster.Add("고블린", 8);
 
-float experAve = 0;
-foreach (KeyValuePair<string, int> pair in monster)
-{
-    experAve += pair.Value;
-}
-
-Debug.Log(experAve / monster.Count);
 ```
 
-![image](https://github.com/user-attachments/assets/0bc8ccee-5337-49e0-9315-0243149fb8ba)
+![image](https://github.com/user-attachments/assets/7173a62a-322d-411c-a1fb-ec5d6a281366)
 
 
 ```csharp
-Dictionary<string, string> KoEn = new Dictionary<string, string>();
-KoEn.Add("사과", "apple");
-KoEn.Add("바나나", "banana");
-KoEn.Add("오렌지", "Orange");
-KoEn.Add("마우스", "mouse");
-KoEn.Add("구멍", "hole");
 
-Dictionary<string, string> EnKo = new Dictionary<string, string>();
-foreach (KeyValuePair<string, string> pair in KoEn)
-{
-    EnKo.Add(pair.Value, pair.Key);
-    Debug.Log(pair.Value + " : " + pair.Key);
-}
-```
-
-![image](https://github.com/user-attachments/assets/bbe42acb-e3aa-4d28-97d8-e78df068a707)
-
-
-```csharp
-struct Character
-{
-    public string name;
-    public int attack;
-
-    public Character(string name, int attack)
-    {
-        this.name = name;
-        this.attack = attack;
-    }
-}
-void Start()
-{
-    List<Character> list = new List<Character>();
-    list.Add(new Character("민수", 12));
-    list.Add(new Character("철수", 15));
-
-    int count = 0;
-    float attackAve = 0;
-    foreach (Character c in list)
-    {
-        if (c.name.Contains("수"))
-        {
-            attackAve += c.attack;
-            count++;
-        }
-    }
-
-    Debug.Log(attackAve / count);
-}
-```
-
-![image](https://github.com/user-attachments/assets/c9582892-f754-4c35-ade2-9dfd2dd18a22)
-
-
-```csharp
-public class StackClass
-{
-    Stack<int> stack;
-    
-    public StackClass() 
-    { 
-        stack = new Stack<int>();
-    }
-
-    public void Add(int data)
-    {
-        stack.Push(data);
-    }
-
-    public int Pop()
-    {
-        return stack.Pop();
-    }
-}
-void Start()
-{
-    StackClass stackClass = new StackClass();
-    stackClass.Add(0);
-    stackClass.Add(1);
-    stackClass.Add(21);
-
-    Debug.Log(stackClass.Pop());
-    Debug.Log(stackClass.Pop());
-}
-```
-
-![image](https://github.com/user-attachments/assets/69edc406-553c-4eab-9ec2-bf2fc1d1e235)
-
-
-```csharp
-public class QueueClass
-{
-    Queue<int> queue;
-
-    public QueueClass()
-    {
-        queue = new Queue<int>();
-    }
-
-    public void Push(int data)
-    {
-        queue.Enqueue(data);
-    }
-
-    public int Pop() 
-    { 
-        return queue.Dequeue();
-    }
-}
-void Start()
-{
-    QueueClass queueClass = new QueueClass();
-    queueClass.Push(9);
-    queueClass.Push(7);
-    queueClass.Push(5);
-    queueClass.Push(1);
-
-    Debug.Log(queueClass.Pop());
-    Debug.Log(queueClass.Pop());
-}
 ```
