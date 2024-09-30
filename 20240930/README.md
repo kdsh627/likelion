@@ -4,39 +4,47 @@
 
 - 불러온 스프라이트 이미지에서 모드를 Multiple로 해주자
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/39ef21d3-82db-439c-afe0-05fd47b6e74f/image.png)
+![image](https://github.com/user-attachments/assets/575e28a9-f8d5-40e5-ad47-6d9dc977d30f)
+
 
 - 이제 에디터를 켜서 슬라이스 ⇒  타입 설정 ⇒ 16, 16으로 해준다.
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/c027aeda-8abb-4e67-905e-2cc6bdc3bc1e/image.png)
+![image](https://github.com/user-attachments/assets/60bfc5cd-6fe2-48db-b40f-70d03c4890f6)
+
 
 - Rectangular를 선택하여 Grid를 생성할 수 있다.
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/9b7dc721-3def-4ec7-a1ac-3ef5e84ba4d7/image.png)
+![image](https://github.com/user-attachments/assets/4621a265-0a82-408a-9b32-15bbcc3b39f9)
+
 
 - Open TilePalette를 통해 레벨 디자인이 가능해진다. 땅이랑 풀 같은 건 다른 터레인으로 분리시켜놓는다. 또한, 타일 사이즈가 맞지 않으면 Grid에서 셀 사이즈를 만져보자
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/91877d8c-80a4-41dc-8b8a-a8cb72d090d6/image.png)
+![image](https://github.com/user-attachments/assets/ecfdae06-3a10-4390-b00f-8f5bfc168cbc)
+
 
 - 땅에는 이 3개를 추가해준다 (Used By Composite 체크 하면 그리드마다 적용되었던 맵 콜라이더가 합쳐진다.)그리고 맵이 바뀌는 일도 없으니 Body는 스태틱으로 해준다.
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/1bafa2c6-0b42-48f8-aa2c-48619d254095/image.png)
+![image](https://github.com/user-attachments/assets/6aac6d54-3b7a-4cae-990d-26de001fb4a0)
+
 
 - 플레이어의 경우 리지드바디의 Freeze Rotation에 체크해준다. Z축으로의 회전을 막아서 캐릭터가 앞 뒤로 넘어지는 것을 방지한다.
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/f0c89e3e-f87a-44d2-a58c-fdf2f4414413/image.png)
+![image](https://github.com/user-attachments/assets/c53c1a60-e2db-41d5-bd5c-34090e4bb4ea)
 
 - 시네머신을 패키지 매니저에서 추가하고 Virtual Camera하나를 생성한다. Follow에 플레이어를 넣어주면 따라다닌다.
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/34854741-2cfb-4f2f-8e28-c0e1a67c0e09/image.png)
+![image](https://github.com/user-attachments/assets/0bce64ef-7de1-4965-93a9-b17e4a3dd4c9)
+
 
 - 그리고 빈 오브젝트 생성 후 Polygon Colider 2D를 추가하고 사각형으로 맵을 채운다. 그 뒤로 Virtual Camera에서 Add Extension 에서 Cinemachine Confiner 2D를 선택하여 방금 생성한 오브젝트를 넣어준다. 이러면 팔로우 카메라가 지정한 영역 밖으로 나가지 않는다.
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/3a7bfb2a-3315-4e59-8fd2-9399f124b5ff/image.png)
+![image](https://github.com/user-attachments/assets/fb8c7ae3-77f5-4e6a-83f3-edf8916ea4f0)
+
 
 - 애니메이터는 이렇게 구성된다 기본 설정에서 Transition Duration을 0으로 바꿔줬다. 트리거는 필요한 만큼 생성하고 지정해주자
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/7dcfcd90-185e-4d08-aa46-853d6c39a42e/image.png)
+![image](https://github.com/user-attachments/assets/d76097d3-843c-40f3-a30b-64d3eb98f89c)
+
 
 - 다음은 플레이어 코드이다.
 
