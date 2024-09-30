@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     public float Speed = 5;
     public float JumpSpeed = 5;
     public Collider2D BottomCollider;
-    public CompositeCollider2D TerrainCollider; //
+    public CompositeCollider2D TerrainCollider;
 
     float vx = 0;
     bool grounded = true;
@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        prevVy = GetComponent<Rigidbody2D>().velocity.y;
+
     }
 
     // Update is called once per frame
@@ -29,14 +29,15 @@ public class PlayerController : MonoBehaviour
         //Input.GetAxisRaw("Horizontal") //애는 0, 1, -1만 있음 그래서 즉시 방향 전환
         vx = Input.GetAxisRaw("Horizontal") * Speed;
         float vy = GetComponent<Rigidbody2D>().velocity.y;
+
         //캐릭터가 보는 방향 전환
         if (vx < 0)
         {
-            GetComponent<SpriteRenderer>().flipX = true;
+            GetComponent<SpriteRenderer>().flipX = true; //왼쪽
         }
         if (vx > 0)
         {
-            GetComponent<SpriteRenderer>().flipX = false;
+            GetComponent<SpriteRenderer>().flipX = false; //오른쪽
         }
 
         //점프
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour
             vy = JumpSpeed;
         }
 
+        //SetTrigger는 호출 시 마다 새로운 애니메이션을 작동하므로 단 한번만 작동하도록 로직을 구성해야함
         //땅과 닿아있을 때
         if (BottomCollider.IsTouching(TerrainCollider))
         {
@@ -80,13 +82,13 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (grounded) //지금은 안붙어 있는데 아까는 붙어있었음 = 점프
+            if (grounded) //지금은 안붙어 있는데 아까는 붙어있었음 = 점프 또는 추락
             {
-                if (vy < 0)
+                if (vy < 0) //추락 시
                 {
                     GetComponent<Animator>().SetTrigger("Fall");
                 }
-                else
+                else //상승 시
                 {   
                     GetComponent<Animator>().SetTrigger("Jump");
                 }
@@ -94,7 +96,7 @@ public class PlayerController : MonoBehaviour
             //아까도 안붙어 있었음 = 공중에 있음
             else
             {
-                if (vy * prevVy < 0)
+                if (vy * prevVy < 0) //점프 후 추락 시에만 가능함
                 {
                     GetComponent<Animator>().SetTrigger("Fall");
                 }
@@ -102,10 +104,10 @@ public class PlayerController : MonoBehaviour
         }
 
         grounded = BottomCollider.IsTouching(TerrainCollider); //두 콜라이더의 접촉여부를 반환
-        prevVx = vx;
-        prevVy = vy;
+        prevVx = vx; //현재 프레임 vx를 이전 프레임 vx로 넘김
+        prevVy = vy; //이하동문
 
-        GetComponent<Rigidbody2D>().velocity = new Vector2(vx, vy);
+        GetComponent<Rigidbody2D>().velocity = new Vector2(vx, vy); //속도 값을 지정
     }
 
     //private void FixedUpdate()
