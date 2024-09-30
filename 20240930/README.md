@@ -1,504 +1,162 @@
-# 2024-09-25 유니티 학습
+# 2024-09-30 유니티 학습
 
-**##아는 문법은 생략##**
+## 플랫포머 게임 제작
 
-## 1. C# 기초 문법
+- 불러온 스프라이트 이미지에서 모드를 Multiple로 해주자
 
-- **문자열**
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/39ef21d3-82db-439c-afe0-05fd47b6e74f/image.png)
 
-```csharp
-string str1 = "   dddd     ";
+- 이제 에디터를 켜서 슬라이스 ⇒  타입 설정 ⇒ 16, 16으로 해준다.
 
-Debug.Log(str1.Trim()); //앞 뒤 공백 제거
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/c027aeda-8abb-4e67-905e-2cc6bdc3bc1e/image.png)
 
-string str2 = "ABA";
+- Rectangular를 선택하여 Grid를 생성할 수 있다.
 
-Debug.Log(str2.Replace("A", "B")); //문자열 대체
-```
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/9b7dc721-3def-4ec7-a1ac-3ef5e84ba4d7/image.png)
 
-- **오버라이딩**
+- Open TilePalette를 통해 레벨 디자인이 가능해진다. 땅이랑 풀 같은 건 다른 터레인으로 분리시켜놓는다. 또한, 타일 사이즈가 맞지 않으면 Grid에서 셀 사이즈를 만져보자
 
-```csharp
-public class Character
-{
-    public int Hp;
-    public Character(string name, int hp)
-    {
-        Name = name;
-        Hp = hp;
-    }
-    //오버라이드(덮어쓰기)를 위해서 virtual 키워드를 써준다
-    public virtual void Hit(int damage)
-    {
-        Hp -= damage;
-    }
-}
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/91877d8c-80a4-41dc-8b8a-a8cb72d090d6/image.png)
 
-public class Wizard : Character
-{
-    public int Mp;
-    public Wizard(string name, int hp, int mp) : base(name, hp)
-    {
-        Mp = mp;
-    }
-    public override void Hit(int damage) //오버라이드
-    {
-        //base.Hit(damage); <-이건 부모함수도 실행함
+- 땅에는 이 3개를 추가해준다 (Used By Composite 체크 하면 그리드마다 적용되었던 맵 콜라이더가 합쳐진다.)그리고 맵이 바뀌는 일도 없으니 Body는 스태틱으로 해준다.
 
-        //이러면 클래스에 따라서 부르는 함수가 다름
-        Debug.Log("물리 면역 입니다");
-    }
-    //virtual을 쓰지않아도 new키워드를 override대신 사용하여 비슷한 효과를 낼 수 있다.
-    //new는 기존에 있던 것을 지우고 새롭게 함수를 정의한다는 뜻
-}
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/1bafa2c6-0b42-48f8-aa2c-48619d254095/image.png)
 
-void Start()
-{
-    Wizard wiz = new Wizard("법사", 10, 5);
-    wiz.Hit(5); //오버라이드된 함수 실행
+- 플레이어의 경우 리지드바디의 Freeze Rotation에 체크해준다. Z축으로의 회전을 막아서 캐릭터가 앞 뒤로 넘어지는 것을 방지한다.
 
-    Character minsoo = wiz as Character;
-    minsoo.Hit(5);//이래도 오버라이드된 함수 실행 
-                  //하지만 new를 사용시 그냥 Character클래스 함수 사용
-                  //new는 타입을 보고 virtual은 본질을 본다
-}
-```
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/f0c89e3e-f87a-44d2-a58c-fdf2f4414413/image.png)
 
-- **오버로딩**
+- 시네머신을 패키지 매니저에서 추가하고 Virtual Camera하나를 생성한다. Follow에 플레이어를 넣어주면 따라다닌다.
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/34854741-2cfb-4f2f-8e28-c0e1a67c0e09/image.png)
+
+- 그리고 빈 오브젝트 생성 후 Polygon Colider 2D를 추가하고 사각형으로 맵을 채운다. 그 뒤로 Virtual Camera에서 Add Extension 에서 Cinemachine Confiner 2D를 선택하여 방금 생성한 오브젝트를 넣어준다. 이러면 팔로우 카메라가 지정한 영역 밖으로 나가지 않는다.
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/3a7bfb2a-3315-4e59-8fd2-9399f124b5ff/image.png)
+
+- 애니메이터는 이렇게 구성된다 기본 설정에서 Transition Duration을 0으로 바꿔줬다. 트리거는 필요한 만큼 생성하고 지정해주자
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/579118ca-e1ae-4c92-b8ec-36d637c76e35/7dcfcd90-185e-4d08-aa46-853d6c39a42e/image.png)
+
+- 다음은 플레이어 코드이다.
 
 ```csharp
-public class Character
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.VFX;
+
+public class PlayerController : MonoBehaviour
 {
-    public string Name;
-    protected int Hp; //상속관계에 있는 객체만 사용가능
+    public float Speed = 5;
+    public float JumpSpeed = 5;
+    public Collider2D BottomCollider; //플레이어 발에 달아놓은 콜라이더
+    public CompositeCollider2D TerrainCollider; //맵을 구성하는 터레인 콜라이더
+
+    float vx = 0;
+    bool grounded = true; //땅에 닿았는가
+    float prevVx;
+    float prevVy;
+
+    // Start is called before the first frame update
+    void Start()
+    {
     
-    public Character()
-    {
-
-    }
-
-    public Character(string name, int hp)
-    {
-        Name = name;
-        Hp = hp;
-        N = 5;
-    }
-    //오버로드는 인자의 타입, 개수에 따라서 같은 함수명으로 사용가능하다
-    public void Hit(int damage, int n)
-    {
-        Hp -= (damage*n);
-    }
-		//위의 함수와 함수명은 같지만 인자의 개수가 다른 경우
-    public void Hit(int damage)
-    {
-        Hp -= damage);
-    }
-}
-
-```
-
-- **추상클래스**
-
-```csharp
-public abstract class Animal
-{
-    //추상클래스 : 큰 틀을 만들고 세부내용을 자식들이 구현하는 경우 사용한다
-    //인스턴스화는 불가능
-
-    public abstract void Fly(); //이름만 있는 추상 메소드
-
-    public void introduce()
-    {
-        Debug.Log("안녕하세요 짐승입니다");
-    }
-}
-
-public class Bird : Animal
-{
-    public override void Fly()
-    {
-        Debug.Log("퍼덕퍼덕");
-    }
-}
-
-public class Bug : Animal
-{
-    public override void Fly()
-    {
-        Debug.Log("위잉위잉");
-    }
-}
-
-```
-
-- **인터페이스**
-
-```csharp
-//인터페이스는 어떠한 메소드가 있기로 했다는 약속
-public interface ITurnOnable
-{
-    //인터페이스는 멤버 변수, 메소드 구현 안해도됨
-    public void TurnOn();
-    public void TurnOff();
-}
-
-public class TV : ITurnOnable //인터페이스 상속 시 약속한 메소드를 반드시 구현해야함
-{
-    public void TurnOff()
-    {
-        Debug.Log("리모컨 버튼끄기");
-    }
-
-    public void TurnOn()
-    {
-        Debug.Log("리모컨 버튼켜기");
-    }
-}
-
-public class Car : ITurnOnable
-{
-    public void TurnOff()
-    {
-        Debug.Log("차 키를 넣어");
-    }
-
-    public void TurnOn()
-    {
-        Debug.Log("차 키를 돌려");
-    }
-}
-
-void Start()
-{
-    //C#에서는 다중 상속이 불가능 하지만, 인터페이스는 다중으로 받을 수 있음
-    Car car = new Car();
-    car.TurnOn();//Car클래스의 TurnOn 실행
-
-    ITurnOnable anObject = car;
-
-    anObject.TurnOff();//Car클래스의 TurnOff 실행
-}
-```
-
-- **static**
-
-```csharp
-public class Character
-{
-    //static의 경우 모든 CHaracter객체가 공유하는 값이다.
-    //인스턴스 함수에서는 접근가능하다.
-    static int num = 0;
-
-    public string Name;
-    protected int Hp; //상속관계에 있는 객체만 사용가능
-    private int N;
-
-    //static함수 및 변수는 객체 생성전에도 호출 가능하다.
-    public static void abc()
-    {
-        num++;
-        //Name = "응애"; <- static함수에서는 멤버변수를 부를 수 없다.
-    }
-}
-
-```
-
-- **getter, setter**
-
-```csharp
-public class Character
-{
-    private int Hp;
-
-    public int HP
-    { 
-        get { return HP; } 
-        set { Hp = value; }
-    }
-}
-
-void Start()
-{
-    Character charles = new Character("철수", 10);
-
-    charles.HP = 10; //setter
-    Debug.Log(charles.HP); //getter
-}
-```
-
-## 2. C# 기초 문법 응용 문제
-
-![image](https://github.com/user-attachments/assets/d9403398-87f7-4797-8af9-c5d85ba80d97)
-
-
-```csharp
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
-public class Problem1 : MonoBehaviour
-{
-    enum MOD
-    {
-        RemoveSpace,
-        DistinAlpha,
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        string str1 = "  abca  ";
-
-        string str2 = new string(str1.Reverse().ToArray());
-
-        MOD mod = MOD.RemoveSpace;
-
-        switch (mod)
-        { 
-            case MOD.RemoveSpace:
-                str1.Trim();
-                str2.Trim();
-                break;
-            case MOD.DistinAlpha:
-                str1.ToUpper();
-                str2.ToUpper();
-                break;
-        }
-
-
-        if (str1 == str2)
-        {
-            Debug.Log("팰린드롬 이에용");
-        }
-        else
-        {
-            Debug.Log("이게 뭐에용");
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
-    }
-}
-```
+        //Input.GetAxis("Horizontal") //이건 0, 1, -1 사이에 중간값도 있음 그래서 가속도 느낌이 있음
+        //Input.GetAxisRaw("Horizontal") //애는 0, 1, -1만 있음 그래서 즉시 방향 전환
+        vx = Input.GetAxisRaw("Horizontal") * Speed;
+        float vy = GetComponent<Rigidbody2D>().velocity.y;
 
-![image](https://github.com/user-attachments/assets/0ffb9136-9b8d-4f9b-9e4a-b5509707acb8)
-
-
-```csharp
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public abstract class Shape
-{
-    public abstract float Area();
-}
-
-public class Circle : Shape
-{
-    private int radius;
-
-    public Circle(int radius)
-    {
-        this.radius = radius;
-    }
-
-    public override float Area()
-    {
-        return radius * radius * 3.14f;
-    }
-}
-
-public class Rectangle : Shape
-{
-    private int width;
-    private int height;
-
-    public Rectangle(int width, int height)
-    {
-        this.width = width;
-        this.height = height;
-    }
-
-    public override float Area()
-    {
-        return width * height;
-    }
-}
-
-public class Problem2 : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        Circle circle = new Circle(10);
-        Rectangle rectangle = new Rectangle(5, 4);
-
-        Debug.Log(circle.Area());
-        Debug.Log(rectangle.Area());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-}
-
-```
-
-![image](https://github.com/user-attachments/assets/a15cd7eb-4a98-4e96-8079-57bd46373354)
-
-
-```csharp
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using UnityEngine;
-
-public class Employee
-{
-    private string name;
-
-    public Employee(string name)
-    {
-        this.name = name;
-    }
-
-    public virtual int Money()
-    {
-        return 100;
-    }
-}
-public class FullTime : Employee
-{
-    public FullTime(string name) : base(name) { }
-
-    public override int Money()
-    {
-        return base.Money();
-    }
-}
-
-public class PartTime : Employee
-{
-    int time;
-    public PartTime(string name, int time) : base(name)
-    {
-        this.time = time;
-    }
-
-    public override int Money()
-    {
-        return time * 10;
-    }
-}
-
-
-public class Problem3 : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        FullTime minsoo = new FullTime("민수");
-        PartTime somin = new PartTime("소민", 20);
-
-        Debug.Log(minsoo.Money());
-        Debug.Log(somin.Money());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-}
-
-```
-
-![image](https://github.com/user-attachments/assets/7173a62a-322d-411c-a1fb-ec5d6a281366)
-
-
-```csharp
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Book
-{
-    public string author;
-    public string name;
-
-    public Book(string author, string name)
-    { 
-        this.author = author;
-        this.name = name;
-    }
-}
-
-public class Librarian
-{
-    struct BookInfo
-    {
-        public Book book;
-        public bool isRent;
-
-        public BookInfo(Book book, bool isRent)
+        //캐릭터가 보는 방향 전환
+        if (vx < 0)
         {
-            this.book = book;
-            this.isRent = isRent;
+            GetComponent<SpriteRenderer>().flipX = true; //왼쪽
         }
-    }
-
-    private List<BookInfo> books;
-
-    public Librarian()
-    {
-        books = new List<BookInfo> ();
-    }
-
-    public void AddBook(Book book)
-    {
-        books.Add(new BookInfo(book, false));
-    }
-
-    public void FindBook(string author)
-    {
-        foreach(BookInfo bookInfo in books)
+        if (vx > 0)
         {
-            if(!bookInfo.isRent)//안 빌렸으면
+            GetComponent<SpriteRenderer>().flipX = false; //오른쪽
+        }
+
+        //점프
+        if (Input.GetButtonDown("Jump") && grounded)
+        {
+            vy = JumpSpeed;
+        }
+
+        //SetTrigger는 호출 시 마다 새로운 애니메이션을 작동하므로 단 한번만 작동하도록 로직을 구성해야함
+        //땅과 닿아있을 때
+        if (BottomCollider.IsTouching(TerrainCollider))
+        {
+            //아까는 안붙어 있었음 = 착지
+            if (!grounded)
             {
-                Book book = bookInfo.book;
-                if(book.author == author)
+                //vx == 0이면 가만히 있다는 뜻
+                if (vx == 0)
                 {
-                    Debug.Log("저자 : " + book.author + " 제목 : " + book.name);
+                    GetComponent<Animator>().SetTrigger("Idle");
+                }
+                //vx != 0이면 움직이고 있다는 뜻
+                else
+                {
+                    GetComponent<Animator>().SetTrigger("Run");
+                }
+            }
+            //땅에 계속 붙어 있었음
+            else
+            {
+                if (vx != prevVx) //속도가 변할 시에만 1회 작동
+                {
+                    if (vx == 0) //정지
+                    {
+                        GetComponent<Animator>().SetTrigger("Idle");
+                    }
+                    else //달리기
+                    {
+                        GetComponent<Animator>().SetTrigger("Run");
+                    }
                 }
             }
         }
+        else
+        {
+            if (grounded) //지금은 안붙어 있는데 아까는 붙어있었음 = 점프 또는 추락
+            {
+                if (vy < 0) //추락 시
+                {
+                    GetComponent<Animator>().SetTrigger("Fall");
+                }
+                else //상승 시
+                {   
+                    GetComponent<Animator>().SetTrigger("Jump");
+                }
+            } 
+            //아까도 안붙어 있었음 = 공중에 있음
+            else
+            {
+                if (vy * prevVy < 0) //점프 후 추락 시에만 가능함
+                {
+                    GetComponent<Animator>().SetTrigger("Fall");
+                }
+            }
+        }
+
+        grounded = BottomCollider.IsTouching(TerrainCollider); //두 콜라이더의 접촉여부를 반환
+        prevVx = vx; //현재 프레임 vx를 이전 프레임 vx로 넘김
+        prevVy = vy; //이하동문
+
+        GetComponent<Rigidbody2D>().velocity = new Vector2(vx, vy); //속도 값을 지정
     }
-}
 
-
-public class Problem4 : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        Librarian librarian = new Librarian();
-        librarian.AddBook(new Book("가", "집가고싶다"));
-        librarian.AddBook(new Book("나", "집가기싫다"));
-        librarian.AddBook(new Book("가", "응애응애"));
-
-        librarian.FindBook("가");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    //private void FixedUpdate()
+    //{
+    //    transform.Translate(Vector2.right * vx * Time.fixedDeltaTime);
+    //}
 }
 
 ```
