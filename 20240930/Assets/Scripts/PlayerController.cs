@@ -104,6 +104,7 @@ public class PlayerController : MonoBehaviour
         }
 
         grounded = BottomCollider.IsTouching(TerrainCollider); //두 콜라이더의 접촉여부를 반환
+                                                           
         prevVx = vx; //현재 프레임 vx를 이전 프레임 vx로 넘김
         prevVy = vy; //이하동문
 
