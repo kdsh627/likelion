@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public int Hp = 0;
     public float Speed;
     public CompositeCollider2D TerrainCollider;
     public Collider2D FrontBottomCollider;
@@ -11,7 +12,6 @@ public class Enemy : MonoBehaviour
 
     Vector2 vx;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         vx = Vector2.right * Speed;
@@ -30,5 +30,24 @@ public class Enemy : MonoBehaviour
     private void FixedUpdate()
     {
         transform.Translate(vx * Time.fixedDeltaTime);
+    }
+
+    public void Hit(int damage)
+    {
+        Hp -= damage;
+        if(Hp<=0)
+        {
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+            GetComponent<Rigidbody2D>().angularVelocity = 720;
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
+            GetComponent<BoxCollider2D>().enabled = false;
+
+            Invoke("DestroyThis", 2f);
+        }
+    }
+
+    private void DestroyThis()
+    {
+        Destroy(gameObject);
     }
 }

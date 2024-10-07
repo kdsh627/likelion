@@ -20,7 +20,7 @@ public class EndPoint : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            Debug.Log("Clear in EndPoint");
+            GameManager.Instance.GameClear();
         }
     }
 }

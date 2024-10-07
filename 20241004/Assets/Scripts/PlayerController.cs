@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     public Collider2D BottomCollider;
     public CompositeCollider2D TerrainCollider;
 
+    public GameObject BulletPrefab;
+
     float vx = 0;
     bool grounded = true;
     float prevVx;
@@ -133,6 +135,21 @@ public class PlayerController : MonoBehaviour
         prevVy = vy; //이하동문
 
         GetComponent<Rigidbody2D>().velocity = new Vector2(vx, vy); //속도 값을 지정
+
+        if(Input.GetButtonDown("Fire1"))
+        {
+            Vector2 bulletY = new Vector2(10, 0);
+
+            if(GetComponent<SpriteRenderer>().flipX)
+            {
+                bulletY.x = -bulletY.x;
+            }
+
+            GameObject bullet = GameManager.Instance.ObjPool.GetObject();
+            bullet.transform.position = transform.position;
+            bullet.GetComponent<Bullet>().Velocity = bulletY;
+
+        }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {

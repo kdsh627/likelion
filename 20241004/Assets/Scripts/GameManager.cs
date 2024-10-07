@@ -9,8 +9,11 @@ public class GameManager : MonoBehaviour
     public LifeDisPlayer LifeDisPlayerInstance;
     public GameObject CinamachineInstance;
     public TMP_Text timeLimitLabel;
+    public ObjectPool ObjPool;
     public float TimeLimit = 30;
     int life = 3;
+
+    [SerializeField] private GameObject popupCanvas;
 
     private static GameManager instance;
     public static GameManager Instance
@@ -20,6 +23,9 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
+
+    private bool isCleard;
+    public bool IsCleard => isCleard;
 
     void Start()
     {
@@ -35,6 +41,11 @@ public class GameManager : MonoBehaviour
     {
         TimeLimit -= Time.deltaTime;
         timeLimitLabel.text = "Time Left " + ((int)TimeLimit);
+
+        if(TimeLimit < 0)
+        {
+            GameOver();
+        }
     }
 
     public void AddTime(float time)
@@ -51,7 +62,7 @@ public class GameManager : MonoBehaviour
         Invoke("Restart", 2);
     }
 
-    void Restart()
+    public void Restart()
     { 
         if(life > 0)
         {
@@ -62,11 +73,17 @@ public class GameManager : MonoBehaviour
         {
             GameOver();
         }
+    }
 
-        void GameOver()
-        {
-            Debug.Log("GameOver");
-        }
+    public void GameClear()
+    {
+        isCleard = true;
+        popupCanvas.SetActive(true);
+    }
+    public void GameOver()
+    {
+        isCleard = false;
+        popupCanvas.SetActive(true);
     }
 
 }
