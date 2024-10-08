@@ -6,11 +6,16 @@ public class Enemy : MonoBehaviour
 {
     public int Hp = 0;
     public float Speed;
-    public CompositeCollider2D TerrainCollider;
+    private CompositeCollider2D TerrainCollider;
     public Collider2D FrontBottomCollider;
     public Collider2D FrontCollider;
 
     Vector2 vx;
+
+    private void Awake()
+    {
+        TerrainCollider = GameObject.FindWithTag("Terrain").GetComponent<CompositeCollider2D>();
+    }
 
     void Start()
     {

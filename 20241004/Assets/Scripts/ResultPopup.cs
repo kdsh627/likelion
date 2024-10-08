@@ -104,6 +104,7 @@ public class ResultPopup : MonoBehaviour
 
     public void QuitPressed()
     {
-        Application.Quit();
+        Time.timeScale = 1;
+        SceneManager.LoadScene("LevelSelectScene");
     }
 }

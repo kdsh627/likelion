@@ -29,7 +29,10 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        Instantiate(LevelManager.Instance.SelectedPrefab);
+
         life = 3;
+        //LifeDisplayerInstance.SetLives(life);
     }
     private void Awake()
     {
